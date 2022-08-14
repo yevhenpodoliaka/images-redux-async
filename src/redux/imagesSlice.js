@@ -2,24 +2,25 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import fetchImg from '../service/apiService';
 const initialState = {
   items: [],
-  query:'',
+  query: '',
   page: 1,
   status: null,
-  error:null,
+  error: null,
 };
 
-
-export const getImages = createAsyncThunk('items/getImg', async (_, { rejectWithValue, dispatch, getState }) => {
-  const state = getState()
-  const { page, query } = state.images
-try {
-    const res = await fetchImg(query, page);
-    await dispatch(setItems(res.hits));
-} catch (error) {
-  console.log(error)
-}
-
-})
+export const getImages = createAsyncThunk(
+  'items/getImages',
+  async (_, { rejectWithValue, dispatch, getState }) => {
+    const state = getState();
+    const { page, query } = state.images;
+    try {
+      const res = await fetchImg(query, page);
+      await dispatch(setItems(res.hits));
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 export const imagesSlice = createSlice({
   name: 'images',
@@ -39,23 +40,27 @@ export const imagesSlice = createSlice({
     },
   },
   extraReducers: {
-    [getImages.pending]: () => {
+    [getImages.pending]: state => {
       console.log('pending');
+      state.status = 'isLoading';
     },
-    [getImages.fulfilled]: () => {
+    [getImages.fulfilled]: state => {
       console.log('fulfilled');
+      state.status = 'fulfilled';
     },
-    [getImages.rejected]: () => {
+    [getImages.rejected]: state => {
       console.log('rejected');
+      state.status = 'rejected';
     },
   },
 });
 
-
-export const { incrementPage, resetPage, setQuery, setItems } = imagesSlice.actions;
+export const { incrementPage, resetPage, setQuery, setItems } =
+  imagesSlice.actions;
 export default imagesSlice.reducer;
 
 // selector
 export const getImagesItems = state => state.images.items;
 export const getImagesQuery = state => state.images.query;
 export const getImagesPage = state => state.images.page;
+export const getFetchStatus = state => state.images.status;

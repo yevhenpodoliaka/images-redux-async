@@ -6,10 +6,10 @@ import { FiSearch } from 'react-icons/fi';
 export default function Searchbar( {onSubmit,placeholder}) {
   const[value,setValue]=useState('')
 
-  const handleChange = e => {
+  const handlerChange = e => {
     setValue( e.target.value );
   };
-  const handleSabmit = e => {
+  const handlerSubmit = e => {
     e.preventDefault();
    onSubmit(value);
     setValue( '' );
@@ -17,13 +17,13 @@ export default function Searchbar( {onSubmit,placeholder}) {
 
     return (
       <SearchWrap>
-        <Form onSubmit={handleSabmit}>
+        <Form onSubmit={handlerSubmit}>
           <Btn type="submit">
             <FiSearch />
           </Btn>
 
           <Input
-            onChange={handleChange}
+            onChange={handlerChange}
             value={value}
             type="text"
             autocomplete="off"

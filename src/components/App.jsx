@@ -1,34 +1,42 @@
-import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  getImagesPage,
-  getImagesQuery,
   getImagesItems,
+  getFetchStatus,
   getImages,
   setQuery,
   resetPage,
+  incrementPage,
 } from '../redux/imagesSlice';
 import Searchbar from './Searchbar/Searchbar';
 import Gallery from './Gallery/Gallery';
+import Button from 'Button/Button';
 
 export const App = () => {
   const dispatch=useDispatch()
   const items = useSelector(getImagesItems)
-  const page = useSelector(getImagesPage)
-  const query = useSelector(getImagesQuery)
+  const status = useSelector(getFetchStatus);
+  console.log(status)
 
-  useEffect(() => {
-  dispatch(getImages())
-  },[query, page, dispatch])
+
   const onSubmit = (value) => {
-    console.log(value);
     dispatch(resetPage())
     dispatch(setQuery(value));
-}
+     dispatch(getImages());
+  }
+  const handerClick = () => {
+    dispatch(incrementPage());
+      dispatch(getImages());
+
+  }
+
   return (
     <>
-      <Searchbar placeholder='search images...' onSubmit={onSubmit} />
-      <Gallery items={items}/>
+      <Searchbar placeholder="search images..." onSubmit={onSubmit} />
+      <Gallery items={items} />
+      <Button
+        text={status==='isLoading' ? 'loading ...' : 'Load More'}
+        onClick={handerClick}
+      />
     </>
   );
 };
